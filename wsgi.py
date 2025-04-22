@@ -1,4 +1,4 @@
-from run import app
+from vercel_app import app
 
 # This is for Vercel deployment
 if __name__ == "__main__":
