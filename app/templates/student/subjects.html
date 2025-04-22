@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="mb-4">Subject Management</h1>
+    
+    <div class="row">
+        <div class="col-md-5 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Add New Subject</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('student.add_subject') }}">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Subject Name</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="code" class="form-label">Subject Code</label>
+                            <input type="text" class="form-control" id="code" name="code" required>
+                            <div class="form-text">Enter a unique code for this subject (e.g., CS101).</div>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">Add Subject</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-7 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Available Subjects</h5>
+                </div>
+                <div class="card-body">
+                    {% if all_subjects %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Subject Name</th>
+                                        <th>Subject Code</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for subject in all_subjects %}
+                                        <tr>
+                                            <td>{{ subject.name }}</td>
+                                            <td>{{ subject.code }}</td>
+                                            <td>
+                                                {% if subject.id in enrolled_subject_ids %}
+                                                    <form method="POST" action="{{ url_for('student.unenroll_subject', subject_id=subject.id) }}" style="display: inline;">
+                                                        <button type="submit" class="btn btn-sm btn-danger">
+                                                            <i class="fas fa-times"></i> Unenroll
+                                                        </button>
+                                                    </form>
+                                                {% else %}
+                                                    <form method="POST" action="{{ url_for('student.enroll_subject', subject_id=subject.id) }}" style="display: inline;">
+                                                        <button type="submit" class="btn btn-sm btn-success">
+                                                            <i class="fas fa-plus"></i> Enroll
+                                                        </button>
+                                                    </form>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p>No subjects are available. Use the form to add your first subject.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">My Enrolled Subjects</h5>
+        </div>
+        <div class="card-body">
+            {% if enrolled_subject_ids %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Subject Name</th>
+                                <th>Subject Code</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for subject in all_subjects %}
+                                {% if subject.id in enrolled_subject_ids %}
+                                    <tr>
+                                        <td>{{ subject.name }}</td>
+                                        <td>{{ subject.code }}</td>
+                                        <td>
+                                            <a href="{{ url_for('student.add_performance') }}" class="btn btn-sm btn-primary">
+                                                <i class="fas fa-chart-line"></i> Add Performance
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p>You are not enrolled in any subjects yet. Please add or enroll in subjects from above.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

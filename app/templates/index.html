@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <h1 class="display-4 mb-4">Welcome to Student Performance Analyzer</h1>
+            <p class="lead mb-5">A machine learning powered platform to predict and analyze student performance based on various factors.</p>
+            
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body text-center py-5">
+                            <i class="fas fa-user-graduate fa-4x mb-3 text-primary"></i>
+                            <h3>For Students</h3>
+                            <p class="mb-4">Track your performance, enter your data, and get personalized score predictions.</p>
+                            <a href="{{ url_for('auth.register') }}" class="btn btn-primary">Register as Student</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body text-center py-5">
+                            <i class="fas fa-chalkboard-teacher fa-4x mb-3 text-primary"></i>
+                            <h3>For Faculty</h3>
+                            <p class="mb-4">Analyze student performance, view detailed reports, and identify areas for improvement.</p>
+                            <a href="{{ url_for('auth.register') }}" class="btn btn-primary">Register as Faculty</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-5">
+                <h2 class="mb-4">How It Works</h2>
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body text-center py-4">
+                                <i class="fas fa-user-plus fa-3x mb-3 text-primary"></i>
+                                <h4>Register & Login</h4>
+                                <p>Create your account and complete your profile</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body text-center py-4">
+                                <i class="fas fa-edit fa-3x mb-3 text-primary"></i>
+                                <h4>Enter Your Data</h4>
+                                <p>Add your subjects, grades, attendance, and study hours</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body text-center py-4">
+                                <i class="fas fa-chart-line fa-3x mb-3 text-primary"></i>
+                                <h4>Get Predictions</h4>
+                                <p>View ML-powered performance predictions and analytics</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

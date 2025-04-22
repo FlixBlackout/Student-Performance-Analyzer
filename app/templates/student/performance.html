@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="mb-4">Performance Overview</h1>
+    
+    <div class="mb-4">
+        <a href="{{ url_for('student.add_performance') }}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Add New Performance Data
+        </a>
+    </div>
+    
+    {% if performances %}
+        <div class="row">
+            <div class="col-md-12 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Performance Summary</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Subject</th>
+                                        <th>Previous Grade</th>
+                                        <th>Attendance</th>
+                                        <th>Study Hours</th>
+                                        <th>Predicted Score</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for performance in performances %}
+                                        <tr>
+                                            <td>{{ performance.subject.name }}</td>
+                                            <td>{{ performance.previous_grade }}</td>
+                                            <td>{{ performance.attendance_percentage }}%</td>
+                                            <td>{{ performance.study_hours }} hrs/week</td>
+                                            <td>
+                                                {% if performance.predicted_score %}
+                                                    <span class="badge bg-success">{{ "%.2f"|format(performance.predicted_score) }}</span>
+                                                {% else %}
+                                                    <span class="badge bg-secondary">Not Available</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Performance Visualization</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="performanceChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Factors Affecting Performance</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="factorsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="card">
+            <div class="card-body">
+                <p>No performance data available yet. Please add your performance data to get predictions.</p>
+                <a href="{{ url_for('student.add_performance') }}" class="btn btn-primary">Add Performance Data</a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{% if performances %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Performance Data Chart
+        const ctx = document.getElementById('performanceChart').getContext('2d');
+        const performanceChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: [{% for p in performances %}'{{ p.subject.name if p.subject else "Unknown" }}',{% endfor %}],
+                datasets: [{
+                    label: 'Previous Grade',
+                    data: [{% for p in performances %}{{ p.previous_grade }},{% endfor %}],
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }, {
+                    label: 'Predicted Score',
+                    data: [{% for p in performances %}{{ p.predicted_score if p.predicted_score else 0 }},{% endfor %}],
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100
+                    }
+                },
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top'
+                    },
+                    title: {
+                        display: true,
+                        text: 'Performance Comparison'
+                    }
+                }
+            }
+        });
+
+        // Factors Chart
+        const factorsCtx = document.getElementById('factorsChart').getContext('2d');
+        const factorsChart = new Chart(factorsCtx, {
+            type: 'radar',
+            data: {
+                labels: [{% for p in performances %}'{{ p.subject.name if p.subject else "Unknown" }}',{% endfor %}],
+                datasets: [{
+                    label: 'Attendance (%)',
+                    data: [{% for p in performances %}{{ p.attendance_percentage }},{% endfor %}],
+                    backgroundColor: 'rgba(255, 206, 86, 0.2)',
+                    borderColor: 'rgba(255, 206, 86, 1)',
+                    borderWidth: 1
+                }, {
+                    label: 'Study Hours',
+                    data: [{% for p in performances %}{{ p.study_hours }},{% endfor %}],
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    r: {
+                        angleLines: {
+                            display: true
+                        },
+                        suggestedMin: 0
+                    }
+                },
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top'
+                    },
+                    title: {
+                        display: true,
+                        text: 'Performance Factors'
+                    }
+                }
+            }
+        });
+    });
+</script>
+{% endif %}
+{% endblock %}

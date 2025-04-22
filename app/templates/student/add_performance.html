@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Add Performance Data</h5>
+                </div>
+                <div class="card-body">
+                    {% if subjects %}
+                        <form method="POST" action="{{ url_for('student.add_performance') }}">
+                            <div class="mb-3">
+                                <label for="subject_id" class="form-label">Subject</label>
+                                <select class="form-select" id="subject_id" name="subject_id" required>
+                                    <option value="" selected disabled>Select a subject</option>
+                                    {% for subject in subjects %}
+                                        <option value="{{ subject.id }}">{{ subject.name }} ({{ subject.code }})</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="previous_grade" class="form-label">Previous Grade (0-100)</label>
+                                <input type="number" class="form-control" id="previous_grade" name="previous_grade" min="0" max="100" step="0.01" required>
+                                <div class="form-text">Enter your previous grade in this subject (0-100).</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="attendance" class="form-label">Attendance Percentage (0-100)</label>
+                                <input type="number" class="form-control" id="attendance" name="attendance" min="0" max="100" step="0.01" required>
+                                <div class="form-text">Enter your attendance percentage for this subject.</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="study_hours" class="form-label">Weekly Study Hours</label>
+                                <input type="number" class="form-control" id="study_hours" name="study_hours" min="0" step="0.5" required>
+                                <div class="form-text">Enter the number of hours you study this subject per week.</div>
+                            </div>
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary">Predict Performance</button>
+                            </div>
+                        </form>
+                    {% else %}
+                        <div class="alert alert-warning">
+                            <p>You are not enrolled in any subjects yet. Please enroll in subjects first.</p>
+                            <a href="{{ url_for('student.subjects') }}" class="btn btn-primary mt-2">Enroll in Subjects</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0">How Performance Prediction Works</h5>
+                </div>
+                <div class="card-body">
+                    <p>Our machine learning model analyzes three key factors to predict your performance:</p>
+                    <ul>
+                        <li><strong>Previous Grade:</strong> Your past performance in the subject</li>
+                        <li><strong>Attendance:</strong> Your attendance percentage in the subject</li>
+                        <li><strong>Study Hours:</strong> The number of hours you dedicate to studying the subject each week</li>
+                    </ul>
+                    <p>The model uses these factors to generate a predicted score that can help you understand your potential performance and identify areas for improvement.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

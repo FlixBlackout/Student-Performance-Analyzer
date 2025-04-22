@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h1>Student Details: {{ student.first_name }} {{ student.last_name }}</h1>
+            <a href="{{ url_for('faculty.students') }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Students
+            </a>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Student Information</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Name:</strong> {{ student.first_name }} {{ student.last_name }}</p>
+                    <p><strong>Roll Number:</strong> {{ student.roll_number }}</p>
+                    <p><strong>Email:</strong> {{ student.user.email }}</p>
+                    <p><strong>Department:</strong> {{ student.department }}</p>
+                    <p><strong>Year:</strong> {{ student.year }}</p>
+                    <p><strong>Semester:</strong> {{ student.semester }}</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Performance Data</h5>
+                </div>
+                <div class="card-body">
+                    {% if performances %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Subject</th>
+                                        <th>Previous Grade</th>
+                                        <th>Attendance (%)</th>
+                                        <th>Study Hours</th>
+                                        <th>Predicted Score</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for performance in performances %}
+                                        <tr>
+                                            <td>{{ performance.subject.name if performance.subject else 'N/A' }}</td>
+                                            <td>{{ performance.previous_grade }}</td>
+                                            <td>{{ performance.attendance_percentage }}</td>
+                                            <td>{{ performance.study_hours }}</td>
+                                            <td>
+                                                {% if performance.predicted_score %}
+                                                    <span class="badge bg-primary">{{ performance.predicted_score|round(2) }}</span>
+                                                {% else %}
+                                                    <span class="badge bg-secondary">Not predicted</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info">
+                            This student has not entered any performance data yet.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {% if charts %}
+        <div class="row">
+            {% for title, chart_data in charts %}
+                <div class="col-md-6 mb-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">{{ title }}</h5>
+                        </div>
+                        <div class="card-body text-center">
+                            <img src="data:image/png;base64,{{ chart_data }}" class="img-fluid" alt="{{ title }}">
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    
+    {% if not performances %}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Recommendation</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle"></i> This student has not entered any performance data yet. 
+                            You may want to encourage them to add their performance data to get predictions.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
