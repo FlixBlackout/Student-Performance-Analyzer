@@ -1,51 +1,370 @@
 {% extends "base.html" %}
 
+{% block extra_css %}
+<style>
+    /* Import Google Fonts */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    
+    body {
+        font-family: 'Inter', sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+    }
+    
+    /* Animated Background */
+    .animated-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+        background-size: 400% 400%;
+        animation: gradientShift 15s ease infinite;
+    }
+    
+    @keyframes gradientShift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+    
+    /* Main register container */
+    .register-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        position: relative;
+        z-index: 1;
+    }
+    
+    /* Glassmorphism card */
+    .glass-card {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+        padding: 0;
+        width: 100%;
+        max-width: 480px;
+        transform: translateY(20px);
+        opacity: 0;
+        animation: slideInUp 0.8s ease forwards;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    @keyframes slideInUp {
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+    
+    /* Header styling */
+    .register-header {
+        text-align: center;
+        padding: 40px 40px 20px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 20px 20px 0 0;
+    }
+    
+    .register-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%);
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin: 0;
+    }
+    
+    .register-subtitle {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 1rem;
+        margin-top: 8px;
+        font-weight: 400;
+    }
+    
+    .logo-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #4ecdc4, #667eea);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        animation: pulse 2s ease-in-out infinite;
+    }
+    
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+    }
+    
+    /* Form styling */
+    .register-form {
+        padding: 40px;
+    }
+    
+    .form-group {
+        margin-bottom: 25px;
+        position: relative;
+    }
+    
+    .form-label {
+        color: rgba(255, 255, 255, 0.9);
+        font-weight: 500;
+        margin-bottom: 8px;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .form-control-modern {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        padding: 15px 20px;
+        color: white;
+        font-size: 1rem;
+        width: 100%;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+    }
+    
+    .form-control-modern::placeholder {
+        color: rgba(255, 255, 255, 0.6);
+    }
+    
+    .form-control-modern:focus {
+        outline: none;
+        border-color: rgba(255, 255, 255, 0.5);
+        background: rgba(255, 255, 255, 0.15);
+        box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+        transform: translateY(-1px);
+    }
+    
+    /* Role selection styling */
+    .role-selection {
+        display: flex;
+        gap: 15px;
+        margin-top: 10px;
+    }
+    
+    .role-option {
+        flex: 1;
+        position: relative;
+    }
+    
+    .role-option input[type="radio"] {
+        display: none;
+    }
+    
+    .role-label {
+        display: block;
+        background: rgba(255, 255, 255, 0.1);
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        padding: 20px 15px;
+        text-align: center;
+        color: rgba(255, 255, 255, 0.8);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+    }
+    
+    .role-label:hover {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: rgba(255, 255, 255, 0.4);
+        transform: translateY(-2px);
+    }
+    
+    .role-option input[type="radio"]:checked + .role-label {
+        background: rgba(255, 255, 255, 0.2);
+        border-color: rgba(255, 255, 255, 0.6);
+        color: white;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .role-icon {
+        font-size: 1.5rem;
+        margin-bottom: 8px;
+        display: block;
+    }
+    
+    .role-text {
+        font-weight: 500;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    /* Button styling */
+    .btn-modern {
+        background: linear-gradient(135deg, #4ecdc4 0%, #667eea 100%);
+        border: none;
+        border-radius: 12px;
+        padding: 15px 30px;
+        color: white;
+        font-weight: 600;
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        width: 100%;
+        margin-bottom: 20px;
+    }
+    
+    .btn-modern:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* Links styling */
+    .modern-link {
+        color: rgba(255, 255, 255, 0.8);
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    
+    .modern-link:hover {
+        color: white;
+        text-decoration: none;
+    }
+    
+    /* Footer styling */
+    .register-footer {
+        text-align: center;
+        padding: 30px 40px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 0 0 20px 20px;
+        color: rgba(255, 255, 255, 0.8);
+    }
+    
+    /* Input icons */
+    .input-icon {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: rgba(255, 255, 255, 0.6);
+    }
+    
+    /* Hide default navbar */
+    .navbar {
+        display: none;
+    }
+    
+    /* Responsive design */
+    @media (max-width: 576px) {
+        .glass-card {
+            margin: 10px;
+            border-radius: 15px;
+        }
+        
+        .register-header {
+            padding: 30px 20px 15px;
+        }
+        
+        .register-form {
+            padding: 30px 20px;
+        }
+        
+        .register-title {
+            font-size: 2rem;
+        }
+        
+        .role-selection {
+            flex-direction: column;
+            gap: 10px;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="text-center mb-0">Register</h3>
-                </div>
-                <div class="card-body">
-                    <form method="POST" action="{{ url_for('auth.register') }}">
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email Address</label>
-                            <input type="email" class="form-control" id="email" name="email" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="username" class="form-label">Username</label>
-                            <input type="text" class="form-control" id="username" name="username" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Password</label>
-                            <input type="password" class="form-control" id="password" name="password" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Role</label>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="role" id="roleStudent" value="student" checked>
-                                <label class="form-check-label" for="roleStudent">
-                                    Student
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="role" id="roleFaculty" value="faculty">
-                                <label class="form-check-label" for="roleFaculty">
-                                    Faculty
-                                </label>
-                            </div>
-                        </div>
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary">Register</button>
-                        </div>
-                    </form>
-                </div>
-                <div class="card-footer text-center">
-                    <p class="mb-0">Already have an account? <a href="{{ url_for('auth.login') }}">Login</a></p>
+<div class="animated-bg"></div>
+
+<div class="register-container">
+    <div class="glass-card">
+        <div class="register-header">
+            <div class="logo-icon">
+                <i class="fas fa-user-plus" style="color: white; font-size: 1.5rem;"></i>
+            </div>
+            <h1 class="register-title">Join Us</h1>
+            <p class="register-subtitle">Create your account to get started</p>
+        </div>
+        
+        <form method="POST" action="{{ url_for('auth.register') }}" class="register-form">
+            <div class="form-group">
+                <label for="email" class="form-label">Email Address</label>
+                <div style="position: relative;">
+                    <input type="email" class="form-control-modern" id="email" name="email" 
+                           placeholder="Enter your email" required autocomplete="email">
+                    <i class="fas fa-envelope input-icon"></i>
                 </div>
             </div>
+            
+            <div class="form-group">
+                <label for="username" class="form-label">Username</label>
+                <div style="position: relative;">
+                    <input type="text" class="form-control-modern" id="username" name="username" 
+                           placeholder="Choose a username" required autocomplete="username">
+                    <i class="fas fa-user input-icon"></i>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="password" class="form-label">Password</label>
+                <div style="position: relative;">
+                    <input type="password" class="form-control-modern" id="password" name="password" 
+                           placeholder="Create a strong password" required autocomplete="new-password">
+                    <i class="fas fa-lock input-icon"></i>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Select Your Role</label>
+                <div class="role-selection">
+                    <div class="role-option">
+                        <input type="radio" name="role" id="roleStudent" value="student" checked>
+                        <label for="roleStudent" class="role-label">
+                            <i class="fas fa-user-graduate role-icon"></i>
+                            <span class="role-text">Student</span>
+                        </label>
+                    </div>
+                    <div class="role-option">
+                        <input type="radio" name="role" id="roleFaculty" value="faculty">
+                        <label for="roleFaculty" class="role-label">
+                            <i class="fas fa-chalkboard-teacher role-icon"></i>
+                            <span class="role-text">Faculty</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn-modern">
+                <i class="fas fa-rocket"></i> Create Account
+            </button>
+        </form>
+        
+        <div class="register-footer">
+            <p style="margin: 0;">Already have an account? 
+                <a href="{{ url_for('auth.login') }}" class="modern-link">
+                    <i class="fas fa-sign-in-alt"></i> Sign In
+                </a>
+            </p>
         </div>
     </div>
 </div>
