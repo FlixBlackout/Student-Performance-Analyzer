@@ -5,9 +5,18 @@
       "src": "wsgi.py",
       "use": "@vercel/python",
       "config": {
+        "pythonRequirements": "requirements-minimal.txt",
+      
+        "maxLambdaSize": "15mb"
+>>>>>>> f2113cbd6c913559f20bad74659972166af0b0a4
         "runtime": "python3.9",
         "pythonRequirements": "requirements.txt",
         "maxLambdaSize": "10mb"
+=======
+        "pythonRequirements": "requirements-minimal.txt",
+      
+        "maxLambdaSize": "15mb"
+>>>>>>> f2113cbd6c913559f20bad74659972166af0b0a4
       }
     }
   ],
