@@ -28,7 +28,7 @@ with app.app_context():
 # Railway health check endpoint
 @app.route('/health')
 def health_check():
-    return {'status': 'healthy', 'service': 'STA Railway App'}, 200
+    return {'status': 'healthy', 'service': 'Student Performance Analyzer'}, 200
 
 # Railway-specific configuration
 if __name__ == '__main__':

@@ -27,8 +27,8 @@ A comprehensive web-based application that uses machine learning to predict stud
 
 1. Clone the repository:
 ```
-git clone <repository-url>
-cd STA
+git clone https://github.com/FlixBlackout/Student-Performance-Analyzer.git
+cd Student-Performance-Analyzer
 ```
 
 2. Create a virtual environment:
@@ -52,7 +52,7 @@ python run.py
 ## Project Structure
 
 ```
-STA/
+Student-Performance-Analyzer/
 ├── app/
 │   ├── models/
 │   │   ├── user.py          # Database models
