@@ -45,3 +45,5 @@ Thumbs.db
 # ML models (if they're large, you might want to regenerate them)
 # Uncomment if needed
 # *.pkl
+
+.vercel

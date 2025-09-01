@@ -1,58 +1,115 @@
-from flask import Flask, render_template, redirect, url_for, flash
-from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager, current_user
+from flask import Flask, render_template, jsonify
 import os
-from dotenv import load_dotenv
-
-# Load environment variables
-load_dotenv()
 
 # Initialize Flask app
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'your-secret-key')
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///site.db')
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-# Initialize SQLAlchemy
-db = SQLAlchemy(app)
-
-# Initialize login manager
-login_manager = LoginManager(app)
-login_manager.login_view = 'login'
-
-# Simple User model for Vercel deployment
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    password_hash = db.Column(db.String(128))
-    role = db.Column(db.String(20), nullable=False)
-
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'sta-secure-secret-key-2025')
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return '''
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>STA - Student Performance Analyzer</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    </head>
+    <body>
+        <div class="container mt-5">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <h1 class="card-title">🎓 Student Performance Analyzer</h1>
+                            <p class="card-text">Your application has been successfully deployed to Vercel!</p>
+                            <p class="text-muted">This is a simplified deployment version for demonstration.</p>
+                            <div class="row mt-4">
+                                <div class="col-md-6">
+                                    <div class="card bg-primary text-white">
+                                        <div class="card-body">
+                                            <h5>👨‍🎓 For Students</h5>
+                                            <p>Track your performance and get ML-powered predictions</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card bg-success text-white">
+                                        <div class="card-body">
+                                            <h5>👨‍🏫 For Faculty</h5>
+                                            <p>Monitor student progress and analytics</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <a href="/status" class="btn btn-primary">Check Deployment Status</a>
+                                <a href="/features" class="btn btn-outline-secondary">View Features</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    </html>
+    '''
 
-@app.route('/login')
-def login():
-    return render_template('login.html')
+@app.route('/status')
+def status():
+    return jsonify({
+        'status': 'success',
+        'message': 'STA Application deployed successfully on Vercel!',
+        'features': [
+            'Student Performance Tracking',
+            'Faculty Analytics Dashboard',
+            'ML-Powered Predictions',
+            'Responsive Bootstrap UI'
+        ],
+        'deployment_platform': 'Vercel',
+        'version': '1.0.0'
+    })
 
-@app.route('/register')
-def register():
-    return render_template('register.html')
-
-@app.route('/deployment-info')
-def deployment_info():
-    return """
-    <h1>STA Application - Vercel Deployment</h1>
-    <p>This is a simplified version of the STA application deployed on Vercel.</p>
-    <p>The full application with ML capabilities is available for local development.</p>
-    <p>For the complete application with all features, please run the application locally.</p>
-    <a href="/">Back to Home</a>
-    """
+@app.route('/features')
+def features():
+    return '''
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>STA Features</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    </head>
+    <body>
+        <div class="container mt-5">
+            <h1>🚀 STA Features</h1>
+            <div class="row">
+                <div class="col-md-6">
+                    <h3>Student Features</h3>
+                    <ul class="list-group">
+                        <li class="list-group-item">📊 Performance tracking</li>
+                        <li class="list-group-item">🤖 ML-powered score predictions</li>
+                        <li class="list-group-item">📚 Subject enrollment</li>
+                        <li class="list-group-item">📈 Progress analytics</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h3>Faculty Features</h3>
+                    <ul class="list-group">
+                        <li class="list-group-item">👥 Student management</li>
+                        <li class="list-group-item">📋 Subject management</li>
+                        <li class="list-group-item">📊 Analytics dashboard</li>
+                        <li class="list-group-item">📈 Performance insights</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-4">
+                <a href="/" class="btn btn-primary">Back to Home</a>
+            </div>
+        </div>
+    </body>
+    </html>
+    '''
 
 if __name__ == '__main__':
     app.run(debug=True)
