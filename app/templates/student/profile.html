@@ -1,34 +1,196 @@
 {% extends "base.html" %}
 
+{% block extra_css %}
+<style>
+    .profile-container {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    
+    .profile-header {
+        text-align: center;
+        margin-bottom: 2rem;
+        padding: 2rem;
+        background: linear-gradient(135deg, rgba(17, 24, 39, 0.9), rgba(31, 41, 55, 0.8));
+        border-radius: 25px;
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+    
+    .profile-title {
+        font-size: 2rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, #3b82f6, #6366f1);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 0.5rem;
+    }
+    
+    .profile-subtitle {
+        color: rgba(156, 163, 175, 0.9);
+        font-size: 1.1rem;
+        font-weight: 500;
+    }
+    
+    .form-floating {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-floating > .form-control {
+        background: rgba(17, 24, 39, 0.8);
+        border: 1px solid rgba(59, 130, 246, 0.3);
+        border-radius: 15px;
+        color: #f8fafc;
+        padding: 1rem 0.75rem;
+        height: auto;
+        transition: all 0.3s ease;
+    }
+    
+    .form-floating > .form-control:focus {
+        background: rgba(31, 41, 55, 0.9);
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25);
+        color: #f8fafc;
+    }
+    
+    .form-floating > .form-control::placeholder {
+        color: transparent;
+    }
+    
+    .form-floating > label {
+        color: rgba(156, 163, 175, 0.8);
+        font-weight: 500;
+    }
+    
+    .form-floating > .form-control:focus ~ label,
+    .form-floating > .form-control:not(:placeholder-shown) ~ label {
+        color: #3b82f6;
+        transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
+    }
+    
+    .save-button {
+        background: linear-gradient(135deg, #3b82f6, #6366f1);
+        border: none;
+        border-radius: 15px;
+        padding: 1rem 3rem;
+        color: white;
+        font-weight: 700;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 15px 35px rgba(59, 130, 246, 0.4);
+        width: 100%;
+        margin-top: 1rem;
+    }
+    
+    .save-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 20px 45px rgba(59, 130, 246, 0.5);
+        color: white;
+    }
+    
+    .avatar-section {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    
+    .profile-avatar {
+        width: 120px;
+        height: 120px;
+        background: linear-gradient(135deg, #1e40af, #3730a3);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem;
+        color: white;
+        margin: 0 auto 1rem;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+        transition: all 0.3s ease;
+    }
+    
+    .profile-avatar:hover {
+        transform: scale(1.05) rotate(5deg);
+    }
+    
+    .floating {
+        animation: floating 3s ease-in-out infinite;
+    }
+    
+    @keyframes floating {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+        100% { transform: translateY(0px); }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="container-fluid">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">Student Profile</h5>
+    <div class="profile-container">
+        <!-- Header -->
+        <div class="profile-header floating">
+            <h1 class="profile-title">Student Profile</h1>
+            <p class="profile-subtitle">Manage your personal information</p>
+        </div>
+        
+        <div class="card">
+            <div class="card-body p-4">
+                <!-- Avatar Section -->
+                <div class="avatar-section">
+                    <div class="profile-avatar">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <h4 style="color: white; font-weight: 600;">{{ current_user.username }}</h4>
+                    <p style="color: rgba(255,255,255,0.7);">{{ current_user.email }}</p>
                 </div>
-                <div class="card-body">
-                    <form method="POST" action="{{ url_for('student.profile') }}">
-                        <div class="mb-3">
-                            <label for="first_name" class="form-label">First Name</label>
-                            <input type="text" class="form-control" id="first_name" name="first_name" value="{{ profile.first_name if profile else '' }}" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="last_name" class="form-label">Last Name</label>
-                            <input type="text" class="form-control" id="last_name" name="last_name" value="{{ profile.last_name if profile else '' }}" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="roll_number" class="form-label">Roll Number</label>
-                            <input type="text" class="form-control" id="roll_number" name="roll_number" value="{{ profile.roll_number if profile else '' }}" required>
-                        </div>
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary">Save Profile</button>
-                        </div>
-                    </form>
-                </div>
+                
+                <form method="POST" action="{{ url_for('student.profile') }}">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="first_name" name="first_name" value="{{ profile.first_name if profile else '' }}" placeholder="First Name" required>
+                        <label for="first_name"><i class="fas fa-user me-2"></i>First Name</label>
+                    </div>
+                    
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="last_name" name="last_name" value="{{ profile.last_name if profile else '' }}" placeholder="Last Name" required>
+                        <label for="last_name"><i class="fas fa-user me-2"></i>Last Name</label>
+                    </div>
+                    
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="roll_number" name="roll_number" value="{{ profile.roll_number if profile else '' }}" placeholder="Roll Number" required>
+                        <label for="roll_number"><i class="fas fa-id-card me-2"></i>Roll Number</label>
+                    </div>
+                    
+                    <button type="submit" class="save-button">
+                        <i class="fas fa-save me-2"></i>Save Profile
+                    </button>
+                </form>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add input animations
+        const inputs = document.querySelectorAll('.form-control');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'translateY(-2px)';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'translateY(0)';
+            });
+        });
+        
+        // Add form submission animation
+        const form = document.querySelector('form');
+        form.addEventListener('submit', function() {
+            const button = this.querySelector('.save-button');
+            button.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Saving...';
+            button.disabled = true;
+        });
+    });
+</script>
 {% endblock %}

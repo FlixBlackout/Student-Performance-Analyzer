@@ -8,82 +8,315 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            --glass-bg: rgba(31, 41, 55, 0.8);
+            --glass-border: rgba(59, 130, 246, 0.3);
+            --glass-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            --sidebar-glass: rgba(17, 24, 39, 0.9);
+            --text-primary: #f8fafc;
+            --text-secondary: rgba(248, 250, 252, 0.8);
+            --accent-blue: #3b82f6;
+            --accent-purple: #6366f1;
+            --card-bg: rgba(17, 24, 39, 0.95);
+            --dark-bg: #0f172a;
+            --darker-bg: #020617;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f8f9fa;
+            font-family: 'Inter', sans-serif;
+            background: var(--darker-bg);
+            background-image: 
+                radial-gradient(at 40% 20%, rgba(59, 130, 246, 0.1) 0px, transparent 50%),
+                radial-gradient(at 80% 0%, rgba(99, 102, 241, 0.1) 0px, transparent 50%),
+                radial-gradient(at 0% 50%, rgba(59, 130, 246, 0.05) 0px, transparent 50%),
+                radial-gradient(at 80% 50%, rgba(99, 102, 241, 0.05) 0px, transparent 50%),
+                radial-gradient(at 0% 100%, rgba(59, 130, 246, 0.1) 0px, transparent 50%),
+                radial-gradient(at 80% 100%, rgba(99, 102, 241, 0.1) 0px, transparent 50%);
+            background-size: 400% 400%;
+            animation: gradientShift 25s ease infinite;
+            min-height: 100vh;
+            color: var(--text-primary);
+            overflow-x: hidden;
         }
+        
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            25% { background-position: 100% 50%; }
+            50% { background-position: 50% 0%; }
+            75% { background-position: 50% 100%; }
+        }
+        
+        /* Dark Navigation */
         .navbar {
-            background-color: #343a40;
+            background: var(--card-bg) !important;
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+            padding: 1rem 0;
         }
+        
         .navbar-brand {
-            font-weight: bold;
-            color: #ffffff;
+            font-weight: 700;
+            color: var(--text-primary) !important;
+            font-size: 1.4rem;
+            transition: all 0.3s ease;
         }
+        
+        .navbar-brand:hover {
+            transform: scale(1.05);
+            color: var(--accent-blue) !important;
+        }
+        
+        .navbar-nav .nav-link {
+            color: var(--text-secondary) !important;
+            font-weight: 500;
+            margin: 0 0.5rem;
+            padding: 0.5rem 1rem !important;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .navbar-nav .nav-link:hover {
+            color: var(--text-primary) !important;
+            background: var(--glass-bg);
+            transform: translateY(-2px);
+        }
+        
+        /* Dark Floating Sidebar */
         .sidebar {
-            min-height: calc(100vh - 56px);
-            background-color: #343a40;
-            padding-top: 20px;
+            position: fixed;
+            top: 80px;
+            left: 20px;
+            width: 280px;
+            height: calc(100vh - 100px);
+            background: var(--sidebar-glass);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+            padding: 2rem 0;
+            z-index: 1000;
+            overflow-y: auto;
+            transition: all 0.3s ease;
         }
+        
+        .sidebar:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 35px 60px rgba(0, 0, 0, 0.2);
+        }
+        
         .sidebar a {
-            color: #adb5bd;
-            padding: 10px 15px;
-            display: block;
+            color: var(--text-secondary);
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
             text-decoration: none;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
+            margin: 0.5rem 1rem;
+            border-radius: 15px;
+            font-weight: 500;
         }
+        
         .sidebar a:hover {
-            color: #ffffff;
-            background-color: #495057;
+            color: var(--text-primary);
+            background: var(--glass-bg);
+            transform: translateX(10px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
         }
+        
         .sidebar a.active {
-            color: #ffffff;
-            background-color: #007bff;
+            color: var(--text-primary);
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            box-shadow: 0 15px 30px rgba(59, 130, 246, 0.4);
+            transform: translateX(10px);
         }
+        
         .sidebar i {
-            margin-right: 10px;
+            margin-right: 1rem;
+            font-size: 1.1rem;
+            width: 20px;
         }
+        
+        /* Content Area */
         .content {
-            padding: 20px;
+            margin-left: 320px;
+            padding: 2rem;
+            min-height: calc(100vh - 80px);
         }
+        
+        .content-no-sidebar {
+            margin-left: 0;
+            padding: 2rem;
+            min-height: calc(100vh - 80px);
+        }
+        
+        /* Dark Glass Cards */
         .card {
-            margin-bottom: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            background: var(--card-bg) !important;
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border) !important;
+            border-radius: 20px !important;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6) !important;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+            overflow: hidden;
         }
+        
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(59, 130, 246, 0.2) !important;
+        }
+        
         .card-header {
-            font-weight: bold;
-            background-color: #f8f9fa;
+            background: rgba(17, 24, 39, 0.8) !important;
+            border-bottom: 1px solid var(--glass-border) !important;
+            font-weight: 600;
+            color: var(--text-primary);
+            padding: 1.5rem;
         }
+        
+        .card-body {
+            padding: 2rem;
+            color: var(--text-primary);
+        }
+        
+        /* Dark Theme Buttons */
         .btn-primary {
-            background-color: #007bff;
-            border-color: #007bff;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple)) !important;
+            border: none !important;
+            border-radius: 15px !important;
+            padding: 0.75rem 2rem !important;
+            font-weight: 600 !important;
+            transition: all 0.3s ease !important;
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.4) !important;
         }
+        
         .btn-primary:hover {
-            background-color: #0069d9;
-            border-color: #0062cc;
+            transform: translateY(-3px) !important;
+            box-shadow: 0 15px 40px rgba(59, 130, 246, 0.5) !important;
         }
+        
+        .btn-sm {
+            padding: 0.5rem 1.5rem !important;
+            font-size: 0.9rem !important;
+        }
+        
+        /* Dark Alerts */
         .alert {
+            background: var(--card-bg) !important;
+            backdrop-filter: blur(20px) !important;
+            border: 1px solid var(--glass-border) !important;
+            border-radius: 15px !important;
+            color: var(--text-primary) !important;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6) !important;
+        }
+        
+        /* Tables */
+        .table {
+            color: var(--text-primary);
+        }
+        
+        .table th {
+            border-color: var(--glass-border);
+            background: rgba(255, 255, 255, 0.1);
+            font-weight: 600;
+        }
+        
+        .table td {
+            border-color: var(--glass-border);
+        }
+        
+        .table-hover tbody tr:hover {
+            background: rgba(59, 130, 246, 0.1);
+        }
+        
+        /* Badges */
+        .badge {
+            padding: 0.5rem 1rem;
             border-radius: 10px;
+            font-weight: 500;
+        }
+        
+        /* List Groups */
+        .list-group {
+            background: transparent;
+        }
+        
+        .list-group-item {
+            background: rgba(17, 24, 39, 0.8);
+            border: 1px solid var(--glass-border);
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            border-radius: 10px;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: -300px;
+                width: 300px;
+                height: 100vh;
+                transition: left 0.3s ease;
+                z-index: 1050;
+            }
+            
+            .sidebar.show {
+                left: 0;
+            }
+            
+            .content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+            
+            .navbar-toggler {
+                border: none;
+                padding: 0.5rem;
+            }
+        }
+        
+        /* Loading Animation */
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+        
+        .loading {
+            animation: pulse 2s ease-in-out infinite;
         }
     </style>
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <!-- Navigation Bar -->
-    <nav class="navbar navbar-expand-lg navbar-dark">
+    <!-- Modern Glassmorphism Navigation -->
+    <nav class="navbar navbar-expand-lg">
         <div class="container-fluid">
             <a class="navbar-brand" href="{{ url_for('auth.index') }}">
                 <i class="fas fa-chart-line"></i> Student Performance Analyzer
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false">
+                <i class="fas fa-bars" style="color: white;"></i>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     {% if current_user.is_authenticated %}
                         <li class="nav-item">
-                            <span class="nav-link">Welcome, {{ current_user.username }}</span>
+                            <span class="nav-link">
+                                <i class="fas fa-user-circle"></i> Welcome, {{ current_user.username }}
+                            </span>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url_for('auth.logout') }}">
@@ -107,71 +340,147 @@
         </div>
     </nav>
 
-    <div class="container-fluid">
-        <div class="row">
-            {% if current_user.is_authenticated %}
-                <!-- Sidebar -->
-                <div class="col-md-2 d-none d-md-block sidebar">
-                    {% if current_user.role == 'student' %}
-                        <a href="{{ url_for('student.dashboard') }}" class="{{ 'active' if request.endpoint == 'student.dashboard' }}">
-                            <i class="fas fa-tachometer-alt"></i> Dashboard
-                        </a>
-                        <a href="{{ url_for('student.profile') }}" class="{{ 'active' if request.endpoint == 'student.profile' }}">
-                            <i class="fas fa-user"></i> Profile
-                        </a>
-                        <a href="{{ url_for('student.subjects') }}" class="{{ 'active' if request.endpoint == 'student.subjects' }}">
-                            <i class="fas fa-book"></i> Subjects
-                        </a>
-                        <a href="{{ url_for('student.performance') }}" class="{{ 'active' if request.endpoint == 'student.performance' }}">
-                            <i class="fas fa-chart-bar"></i> Performance
-                        </a>
-                    {% elif current_user.role == 'faculty' %}
-                        <a href="{{ url_for('faculty.dashboard') }}" class="{{ 'active' if request.endpoint == 'faculty.dashboard' }}">
-                            <i class="fas fa-tachometer-alt"></i> Dashboard
-                        </a>
-                        <a href="{{ url_for('faculty.profile') }}" class="{{ 'active' if request.endpoint == 'faculty.profile' }}">
-                            <i class="fas fa-user"></i> Profile
-                        </a>
-                        <a href="{{ url_for('faculty.subjects') }}" class="{{ 'active' if request.endpoint == 'faculty.subjects' }}">
-                            <i class="fas fa-book"></i> Subjects
-                        </a>
-                        <a href="{{ url_for('faculty.students') }}" class="{{ 'active' if request.endpoint == 'faculty.students' }}">
-                            <i class="fas fa-user-graduate"></i> Students
-                        </a>
-                        <a href="{{ url_for('faculty.analytics') }}" class="{{ 'active' if request.endpoint == 'faculty.analytics' }}">
-                            <i class="fas fa-chart-line"></i> Analytics
-                        </a>
-                    {% endif %}
-                </div>
-                <!-- Main Content -->
-                <div class="col-md-10 ms-sm-auto content">
-            {% else %}
-                <!-- Main Content (Full Width) -->
-                <div class="col-12 content">
+    {% if current_user.is_authenticated %}
+        <!-- Modern Floating Sidebar -->
+        <div class="sidebar d-none d-md-block">
+            {% if current_user.role == 'student' %}
+                <a href="{{ url_for('student.dashboard') }}" class="{{ 'active' if request.endpoint == 'student.dashboard' }}">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a>
+                <a href="{{ url_for('student.profile') }}" class="{{ 'active' if request.endpoint == 'student.profile' }}">
+                    <i class="fas fa-user"></i> Profile
+                </a>
+                <a href="{{ url_for('student.subjects') }}" class="{{ 'active' if request.endpoint == 'student.subjects' }}">
+                    <i class="fas fa-book"></i> Subjects
+                </a>
+                <a href="{{ url_for('student.performance') }}" class="{{ 'active' if request.endpoint == 'student.performance' }}">
+                    <i class="fas fa-chart-bar"></i> Performance
+                </a>
+            {% elif current_user.role == 'faculty' %}
+                <a href="{{ url_for('faculty.dashboard') }}" class="{{ 'active' if request.endpoint == 'faculty.dashboard' }}">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a>
+                <a href="{{ url_for('faculty.profile') }}" class="{{ 'active' if request.endpoint == 'faculty.profile' }}">
+                    <i class="fas fa-user"></i> Profile
+                </a>
+                <a href="{{ url_for('faculty.subjects') }}" class="{{ 'active' if request.endpoint == 'faculty.subjects' }}">
+                    <i class="fas fa-book"></i> Subjects
+                </a>
+                <a href="{{ url_for('faculty.students') }}" class="{{ 'active' if request.endpoint == 'faculty.students' }}">
+                    <i class="fas fa-user-graduate"></i> Students
+                </a>
+                <a href="{{ url_for('faculty.analytics') }}" class="{{ 'active' if request.endpoint == 'faculty.analytics' }}">
+                    <i class="fas fa-chart-line"></i> Analytics
+                </a>
             {% endif %}
-                
-                <!-- Flash Messages -->
-                {% with messages = get_flashed_messages() %}
-                    {% if messages %}
-                        {% for message in messages %}
-                            <div class="alert alert-info alert-dismissible fade show" role="alert">
-                                {{ message }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                        {% endfor %}
-                    {% endif %}
-                {% endwith %}
-                
-                <!-- Page Content -->
-                {% block content %}{% endblock %}
-            </div>
         </div>
-    </div>
+        
+        <!-- Mobile Sidebar -->
+        <div class="sidebar d-md-none" id="mobileSidebar">
+            {% if current_user.role == 'student' %}
+                <a href="{{ url_for('student.dashboard') }}" class="{{ 'active' if request.endpoint == 'student.dashboard' }}">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a>
+                <a href="{{ url_for('student.profile') }}" class="{{ 'active' if request.endpoint == 'student.profile' }}">
+                    <i class="fas fa-user"></i> Profile
+                </a>
+                <a href="{{ url_for('student.subjects') }}" class="{{ 'active' if request.endpoint == 'student.subjects' }}">
+                    <i class="fas fa-book"></i> Subjects
+                </a>
+                <a href="{{ url_for('student.performance') }}" class="{{ 'active' if request.endpoint == 'student.performance' }}">
+                    <i class="fas fa-chart-bar"></i> Performance
+                </a>
+            {% elif current_user.role == 'faculty' %}
+                <a href="{{ url_for('faculty.dashboard') }}" class="{{ 'active' if request.endpoint == 'faculty.dashboard' }}">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a>
+                <a href="{{ url_for('faculty.profile') }}" class="{{ 'active' if request.endpoint == 'faculty.profile' }}">
+                    <i class="fas fa-user"></i> Profile
+                </a>
+                <a href="{{ url_for('faculty.subjects') }}" class="{{ 'active' if request.endpoint == 'faculty.subjects' }}">
+                    <i class="fas fa-book"></i> Subjects
+                </a>
+                <a href="{{ url_for('faculty.students') }}" class="{{ 'active' if request.endpoint == 'faculty.students' }}">
+                    <i class="fas fa-user-graduate"></i> Students
+                </a>
+                <a href="{{ url_for('faculty.analytics') }}" class="{{ 'active' if request.endpoint == 'faculty.analytics' }}">
+                    <i class="fas fa-chart-line"></i> Analytics
+                </a>
+            {% endif %}
+        </div>
+        
+        <!-- Main Content -->
+        <div class="content">
+    {% else %}
+        <!-- Main Content (Full Width) -->
+        <div class="content-no-sidebar">
+    {% endif %}
+                
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-info alert-dismissible fade show" role="alert">
+                            <i class="fas fa-info-circle me-2"></i>{{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="filter: invert(1);"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            
+            <!-- Page Content -->
+            {% block content %}{% endblock %}
+        </div>
 
     <!-- Bootstrap JS Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <script>
+        // Mobile sidebar toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const navbarToggler = document.querySelector('.navbar-toggler');
+            const mobileSidebar = document.getElementById('mobileSidebar');
+            
+            if (navbarToggler && mobileSidebar) {
+                navbarToggler.addEventListener('click', function() {
+                    mobileSidebar.classList.toggle('show');
+                });
+                
+                // Close sidebar when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (!mobileSidebar.contains(e.target) && !navbarToggler.contains(e.target)) {
+                        mobileSidebar.classList.remove('show');
+                    }
+                });
+            }
+            
+            // Smooth animations for cards
+            const cards = document.querySelectorAll('.card');
+            cards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.1}s`;
+                card.classList.add('loading');
+                
+                setTimeout(() => {
+                    card.classList.remove('loading');
+                }, 1000 + (index * 100));
+            });
+            
+            // Add hover effects to buttons
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(btn => {
+                btn.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-2px)';
+                });
+                
+                btn.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+        });
+    </script>
+    
     {% block extra_js %}{% endblock %}
 </body>
 </html>

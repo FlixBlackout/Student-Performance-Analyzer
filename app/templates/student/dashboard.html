@@ -1,32 +1,258 @@
 {% extends "base.html" %}
 
+{% block extra_css %}
+<style>
+    /* Dark theme stats cards */
+    .stats-card {
+        background: linear-gradient(135deg, rgba(17, 24, 39, 0.95), rgba(31, 41, 55, 0.9));
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        border: 1px solid rgba(59, 130, 246, 0.3);
+        padding: 2rem;
+        text-align: center;
+        transition: all 0.4s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .stats-card::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(45deg, transparent, rgba(59, 130, 246, 0.1), transparent);
+        transform: rotate(45deg);
+        transition: all 0.6s ease;
+        opacity: 0;
+    }
+    
+    .stats-card:hover::before {
+        opacity: 1;
+        transform: rotate(45deg) translate(100%, 100%);
+    }
+    
+    .stats-card:hover {
+        transform: translateY(-15px) scale(1.02);
+        box-shadow: 0 40px 70px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(59, 130, 246, 0.3);
+    }
+    
+    .stats-number {
+        font-size: 3rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, #3b82f6, #6366f1);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+    
+    .stats-label {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: rgba(248, 250, 252, 0.9);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    .profile-section {
+        background: linear-gradient(135deg, rgba(17, 24, 39, 0.9), rgba(31, 41, 55, 0.8));
+        border-radius: 25px;
+        padding: 2.5rem;
+        border: 2px solid rgba(59, 130, 246, 0.3);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .profile-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><radialGradient id="grad" cx="50%" cy="50%" r="50%"><stop offset="0%" style="stop-color:%23ffffff;stop-opacity:0.1" /><stop offset="100%" style="stop-color:%23ffffff;stop-opacity:0" /></radialGradient></defs><circle cx="50" cy="50" r="30" fill="url(%23grad)"/></svg>') no-repeat center center;
+        opacity: 0.5;
+        pointer-events: none;
+    }
+    
+    .profile-avatar {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #1e40af, #3730a3);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        color: white;
+        margin: 0 auto 1.5rem;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+        transition: all 0.3s ease;
+    }
+    
+    .profile-avatar:hover {
+        transform: scale(1.1) rotate(5deg);
+    }
+    
+    .performance-table {
+        background: rgba(17, 24, 39, 0.8);
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.5);
+    }
+    
+    .performance-row {
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .performance-row:hover {
+        background: rgba(59, 130, 246, 0.1);
+        transform: scale(1.01);
+    }
+    
+    .subject-badge {
+        background: linear-gradient(135deg, #1e40af, #3730a3);
+        color: white;
+        padding: 0.5rem 1.2rem;
+        border-radius: 25px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        display: inline-block;
+        box-shadow: 0 8px 20px rgba(30, 64, 175, 0.4);
+    }
+    
+    .score-badge {
+        background: linear-gradient(135deg, #3b82f6, #6366f1);
+        color: white;
+        padding: 0.4rem 1rem;
+        border-radius: 20px;
+        font-weight: 700;
+        font-size: 1rem;
+        box-shadow: 0 8px 20px rgba(59, 130, 246, 0.5);
+        animation: pulse 2s ease-in-out infinite;
+    }
+    
+    @keyframes pulse {
+        0% { box-shadow: 0 8px 20px rgba(59, 130, 246, 0.5); }
+        50% { box-shadow: 0 12px 30px rgba(59, 130, 246, 0.7); }
+        100% { box-shadow: 0 8px 20px rgba(59, 130, 246, 0.5); }
+    }
+    
+    .action-button {
+        background: linear-gradient(135deg, #dc2626, #7c2d12);
+        border: none;
+        border-radius: 15px;
+        padding: 0.8rem 2rem;
+        color: white;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 25px rgba(220, 38, 38, 0.4);
+    }
+    
+    .action-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 35px rgba(220, 38, 38, 0.5);
+        color: white;
+    }
+    
+    .welcome-header {
+        text-align: center;
+        margin-bottom: 3rem;
+        padding: 2rem;
+        background: linear-gradient(135deg, rgba(17, 24, 39, 0.9), rgba(31, 41, 55, 0.8));
+        border-radius: 25px;
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+    
+    .welcome-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, #3b82f6, #6366f1, #8b5cf6);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 0.5rem;
+    }
+    
+    .welcome-subtitle {
+        font-size: 1.2rem;
+        color: rgba(248, 250, 252, 0.8);
+        font-weight: 500;
+    }
+    
+    /* Floating elements animation */
+    .floating {
+        animation: floating 3s ease-in-out infinite;
+    }
+    
+    @keyframes floating {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+        100% { transform: translateY(0px); }
+    }
+    
+    /* Loading shimmer effect */
+    .shimmer {
+        background: linear-gradient(90deg, rgba(255,255,255,0.1) 25%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.1) 75%);
+        background-size: 200% 100%;
+        animation: shimmer 2s infinite;
+    }
+    
+    @keyframes shimmer {
+        0% { background-position: -200% 0; }
+        100% { background-position: 200% 0; }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="container-fluid">
-    <h1 class="mb-4">Student Dashboard</h1>
+    <!-- Welcome Header -->
+    <div class="welcome-header floating">
+        <h1 class="welcome-title">Student Dashboard</h1>
+        <p class="welcome-subtitle">Welcome back! Here's your academic overview</p>
+    </div>
     
-    <div class="row">
+    <div class="row mb-5">
         <div class="col-md-6 mb-4">
-            <div class="card h-100">
-                <div class="card-header">
-                    <h5 class="mb-0">Profile Information</h5>
+            <div class="card profile-section h-100">
+                <div class="profile-avatar">
+                    <i class="fas fa-user-graduate"></i>
                 </div>
-                <div class="card-body">
+                <div class="text-center">
+                    <h3 class="mb-3" style="color: white; font-weight: 700;">Profile Information</h3>
                     {% if profile %}
                         <div class="mb-3">
-                            <strong>Name:</strong> {{ profile.first_name }} {{ profile.last_name }}
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <strong style="color: rgba(255,255,255,0.8);">Name:</strong>
+                                <span style="color: white; font-weight: 600;">{{ profile.first_name }} {{ profile.last_name }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <strong style="color: rgba(255,255,255,0.8);">Roll Number:</strong>
+                                <span style="color: white; font-weight: 600;">{{ profile.roll_number }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <strong style="color: rgba(255,255,255,0.8);">Email:</strong>
+                                <span style="color: white; font-weight: 600;">{{ current_user.email }}</span>
+                            </div>
                         </div>
-                        <div class="mb-3">
-                            <strong>Roll Number:</strong> {{ profile.roll_number }}
-                        </div>
-                        <div class="mb-3">
-                            <strong>Email:</strong> {{ current_user.email }}
-                        </div>
-                        <a href="{{ url_for('student.profile') }}" class="btn btn-sm btn-primary">
+                        <a href="{{ url_for('student.profile') }}" class="action-button">
                             <i class="fas fa-edit"></i> Edit Profile
                         </a>
                     {% else %}
-                        <p>Please complete your profile information.</p>
-                        <a href="{{ url_for('student.profile') }}" class="btn btn-primary">Complete Profile</a>
+                        <p style="color: rgba(255,255,255,0.8); margin-bottom: 2rem;">Please complete your profile information to unlock all features.</p>
+                        <a href="{{ url_for('student.profile') }}" class="action-button">
+                            <i class="fas fa-user-plus"></i> Complete Profile
+                        </a>
                     {% endif %}
                 </div>
             </div>
@@ -35,82 +261,197 @@
         <div class="col-md-6 mb-4">
             <div class="card h-100">
                 <div class="card-header">
-                    <h5 class="mb-0">Enrolled Subjects</h5>
+                    <h5 class="mb-0"><i class="fas fa-book me-2"></i>Enrolled Subjects</h5>
                 </div>
                 <div class="card-body">
                     {% if subjects %}
-                        <ul class="list-group">
+                        <div class="row">
                             {% for subject in subjects %}
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    {{ subject.name }}
-                                    <span class="badge bg-primary rounded-pill">{{ subject.code }}</span>
-                                </li>
+                                <div class="col-12 mb-3">
+                                    <div class="d-flex justify-content-between align-items-center p-3" style="background: rgba(255,255,255,0.1); border-radius: 15px; transition: all 0.3s ease;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">
+                                        <div>
+                                            <h6 class="mb-1" style="color: white; font-weight: 600;">{{ subject.name }}</h6>
+                                            <small style="color: rgba(255,255,255,0.7);">Course Code</small>
+                                        </div>
+                                        <span class="subject-badge">{{ subject.code }}</span>
+                                    </div>
+                                </div>
                             {% endfor %}
-                        </ul>
-                        <div class="mt-3">
-                            <a href="{{ url_for('student.subjects') }}" class="btn btn-sm btn-primary">
-                                <i class="fas fa-book"></i> Manage Subjects
+                        </div>
+                        <div class="text-center mt-3">
+                            <a href="{{ url_for('student.subjects') }}" class="btn btn-primary">
+                                <i class="fas fa-book me-2"></i> Manage Subjects
                             </a>
                         </div>
                     {% else %}
-                        <p>You are not enrolled in any subjects yet.</p>
-                        <a href="{{ url_for('student.subjects') }}" class="btn btn-primary">Enroll in Subjects</a>
+                        <div class="text-center py-4">
+                            <i class="fas fa-book-open" style="font-size: 3rem; color: rgba(255,255,255,0.3); margin-bottom: 1rem;"></i>
+                            <p style="color: rgba(255,255,255,0.8); margin-bottom: 2rem;">You haven't enrolled in any subjects yet. Start your academic journey!</p>
+                            <a href="{{ url_for('student.subjects') }}" class="action-button">
+                                <i class="fas fa-plus"></i> Enroll in Subjects
+                            </a>
+                        </div>
                     {% endif %}
                 </div>
             </div>
         </div>
     </div>
     
+    <!-- Performance Stats -->
+    {% if performances %}
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="stats-card">
+                <span class="stats-number">{{ subjects|length }}</span>
+                <span class="stats-label">Total Subjects</span>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="stats-card">
+                <span class="stats-number">{{ performances|length }}</span>
+                <span class="stats-label">Performance Records</span>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="stats-card">
+                <span class="stats-number">{% if performances %}{{ "%.1f"|format(performances|map(attribute='attendance_percentage')|average) }}%{% else %}0%{% endif %}</span>
+                <span class="stats-label">Avg Attendance</span>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="stats-card">
+                <span class="stats-number">{% if performances %}{{ "%.1f"|format(performances|map(attribute='study_hours')|average) }}{% else %}0{% endif %}</span>
+                <span class="stats-label">Avg Study Hours</span>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
     <div class="row">
         <div class="col-12 mb-4">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="mb-0">Performance Overview</h5>
+                    <h5 class="mb-0"><i class="fas fa-chart-line me-2"></i>Performance Overview</h5>
                 </div>
                 <div class="card-body">
                     {% if performances %}
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>Subject</th>
-                                        <th>Previous Grade</th>
-                                        <th>Attendance</th>
-                                        <th>Study Hours</th>
-                                        <th>Predicted Score</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for performance in performances %}
-                                        <tr>
-                                            <td>{{ performance.subject.name }}</td>
-                                            <td>{{ performance.previous_grade }}</td>
-                                            <td>{{ performance.attendance_percentage }}%</td>
-                                            <td>{{ performance.study_hours }} hrs/week</td>
-                                            <td>
-                                                {% if performance.predicted_score %}
-                                                    <span class="badge bg-success">{{ "%.2f"|format(performance.predicted_score) }}</span>
-                                                {% else %}
-                                                    <span class="badge bg-secondary">Not Available</span>
-                                                {% endif %}
-                                            </td>
+                        <div class="performance-table">
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0">
+                                    <thead>
+                                        <tr style="background: rgba(255,255,255,0.1);">
+                                            <th style="border: none; color: white; font-weight: 700; padding: 1.5rem;">Subject</th>
+                                            <th style="border: none; color: white; font-weight: 700;">Previous Grade</th>
+                                            <th style="border: none; color: white; font-weight: 700;">Attendance</th>
+                                            <th style="border: none; color: white; font-weight: 700;">Study Hours</th>
+                                            <th style="border: none; color: white; font-weight: 700;">Predicted Score</th>
                                         </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        {% for performance in performances %}
+                                            <tr class="performance-row">
+                                                <td style="border: none; padding: 1.5rem;">
+                                                    <span class="subject-badge">{{ performance.subject.name }}</span>
+                                                </td>
+                                                <td style="border: none; color: white; font-weight: 600;">{{ performance.previous_grade }}</td>
+                                                <td style="border: none; color: white; font-weight: 600;">{{ performance.attendance_percentage }}%</td>
+                                                <td style="border: none; color: white; font-weight: 600;">{{ performance.study_hours }} hrs/week</td>
+                                                <td style="border: none;">
+                                                    {% if performance.predicted_score %}
+                                                        <span class="score-badge">{{ "%.2f"|format(performance.predicted_score) }}</span>
+                                                    {% else %}
+                                                        <span class="badge bg-secondary">Not Available</span>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-                        <div class="mt-3">
-                            <a href="{{ url_for('student.performance') }}" class="btn btn-sm btn-primary">
-                                <i class="fas fa-chart-bar"></i> View Detailed Performance
+                        <div class="text-center mt-4">
+                            <a href="{{ url_for('student.performance') }}" class="btn btn-primary me-3">
+                                <i class="fas fa-chart-bar me-2"></i> Detailed Performance
+                            </a>
+                            <a href="{{ url_for('student.add_performance') }}" class="action-button">
+                                <i class="fas fa-plus me-2"></i> Add New Data
                             </a>
                         </div>
                     {% else %}
-                        <p>No performance data available yet.</p>
-                        <a href="{{ url_for('student.add_performance') }}" class="btn btn-primary">Add Performance Data</a>
+                        <div class="text-center py-5">
+                            <div class="mb-4">
+                                <i class="fas fa-chart-line" style="font-size: 4rem; color: rgba(255,255,255,0.3);"></i>
+                            </div>
+                            <h4 style="color: white; font-weight: 700; margin-bottom: 1rem;">No Performance Data Yet</h4>
+                            <p style="color: rgba(255,255,255,0.8); margin-bottom: 2rem; font-size: 1.1rem;">Start tracking your academic performance to get insights and predictions!</p>
+                            <a href="{{ url_for('student.add_performance') }}" class="action-button">
+                                <i class="fas fa-rocket me-2"></i> Add Performance Data
+                            </a>
+                        </div>
                     {% endif %}
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    // Add staggered animation to cards
+    document.addEventListener('DOMContentLoaded', function() {
+        const cards = document.querySelectorAll('.card, .stats-card');
+        cards.forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            
+            setTimeout(() => {
+                card.style.transition = 'all 0.6s ease';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, index * 150);
+        });
+        
+        // Add click animation to buttons
+        const buttons = document.querySelectorAll('.action-button, .btn');
+        buttons.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                const ripple = document.createElement('span');
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                
+                ripple.style.cssText = `
+                    position: absolute;
+                    width: ${size}px;
+                    height: ${size}px;
+                    left: ${x}px;
+                    top: ${y}px;
+                    background: rgba(255,255,255,0.3);
+                    border-radius: 50%;
+                    transform: scale(0);
+                    animation: ripple 0.6s linear;
+                    pointer-events: none;
+                `;
+                
+                this.style.position = 'relative';
+                this.style.overflow = 'hidden';
+                this.appendChild(ripple);
+                
+                setTimeout(() => ripple.remove(), 600);
+            });
+        });
+    });
+    
+    // CSS for ripple animation
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+</script>
 {% endblock %}
