@@ -1,1 +1,1 @@
-web: gunicorn run:app
+web: gunicorn production_app:app --timeout 120 --workers 2 --max-requests 100
