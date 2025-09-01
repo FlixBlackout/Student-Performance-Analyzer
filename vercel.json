@@ -7,6 +7,7 @@
       "config": {
         "runtime": "python3.9",
         "pythonRequirements": "requirements-minimal.txt",
+      
         "maxLambdaSize": "15mb"
       }
     }
