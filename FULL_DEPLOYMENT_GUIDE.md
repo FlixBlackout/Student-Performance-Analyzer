@@ -149,6 +149,14 @@ After deployment, verify these features work:
    - **Solution 3**: Use universal script: `python universal_start.py`
    - **Solution 4**: Set PORT explicitly in environment variables
 
+7. **Scikit-learn Version Mismatch**
+   - **Warning**: `Trying to unpickle estimator from version X.X.X when using version Y.Y.Y`
+   - **Impact**: ML predictions may be unreliable or fail
+   - **Solution 1**: Update scikit-learn version in `requirements-full.txt`
+   - **Solution 2**: Retrain model: `python fix_model_version.py`
+   - **Solution 3**: Application automatically falls back to heuristic predictions
+   - **Note**: Warnings are automatically suppressed in production
+
 ## 🎯 Recommended: Railway Deployment
 
 Railway is the best option because:

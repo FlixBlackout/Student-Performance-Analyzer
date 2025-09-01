@@ -1,11 +1,11 @@
-# railway.toml
+# railway.toml - Fixed for Railway deployment
 [build]
-command = "pip install --upgrade pip && pip install -r requirements-full.txt && chmod +x railway-start.sh"
+command = "pip install --upgrade pip && pip install -r requirements-full.txt"
 
 [deploy]
-startCommand = "bash railway-start.sh"
+startCommand = "python railway_app.py"
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 10
 
 [environments.production]
-variables = { FLASK_ENV = "production", PYTHONPATH = ".", DATABASE_URL = "${{DATABASE_URL}}", SECRET_KEY = "${{SECRET_KEY}}", PORT = "${{PORT}}" }
+variables = { FLASK_ENV = "production", PYTHONPATH = ".", DATABASE_URL = "${{DATABASE_URL}}", SECRET_KEY = "${{SECRET_KEY}}" }
