@@ -21,11 +21,23 @@ class StudentPerformancePredictor:
         """Load model from disk if available"""
         try:
             if os.path.exists(self.model_path) and os.path.exists(self.scaler_path):
-                self.model = joblib.load(self.model_path)
-                self.scaler = joblib.load(self.scaler_path)
-                return True
+                # Try to load model and catch version warnings
+                import warnings
+                with warnings.catch_warnings():
+                    warnings.filterwarnings("ignore", category=UserWarning)
+                    self.model = joblib.load(self.model_path)
+                    self.scaler = joblib.load(self.scaler_path)
+                    
+                # Check if model loaded successfully
+                if self.model is not None:
+                    print("✅ ML Model loaded successfully")
+                    return True
+                else:
+                    print("⚠️ Model file corrupted, will retrain")
+                    return False
         except Exception as e:
-            print(f"Error loading model: {e}")
+            print(f"⚠️ Error loading model: {e}")
+            print("🔄 Will retrain model with current scikit-learn version")
         return False
     
     def save_model(self):

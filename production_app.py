@@ -26,13 +26,20 @@ with app.app_context():
         from app.models.user import db
         db.create_all()
         
-        # Initialize ML model with synthetic data
-        initialize_model()
-        print("✅ ML Model initialized successfully!")
+        # Initialize ML model with version handling
+        import warnings
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", message=".*Trying to unpickle estimator.*")
+            from app.models.ml_model import initialize_model
+            initialize_model()
+        
+        print("✅ Application initialized successfully!")
+        print("🤖 ML Model ready for predictions!")
         
     except Exception as e:
         print(f"⚠️ Warning: Could not initialize ML model: {e}")
-        print("The application will work without ML predictions.")
+        print("📝 The application will work with heuristic predictions.")
+        print("🔧 To fix ML predictions, run: python fix_model_version.py")
 
 if __name__ == '__main__':
     # Get port from environment with fallback
