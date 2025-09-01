@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """
-Railway-specific production app for STA (Student Performance Analyzer)
-Handles Railway's specific PORT and domain requirements
+Student Performance Analyzer - Railway Deployment
+Author: FlixBlackout
+Repository: https://github.com/FlixBlackout/Student-Performance-Analyzer
+
+Railway-specific production app that properly handles Railway's PORT requirements
 """
 
 import os
@@ -27,7 +30,11 @@ def health_check():
     """Health check for Railway"""
     return {
         'status': 'healthy',
-        'message': 'STA application is running on Railway',
+        'message': 'Student Performance Analyzer is running on Railway',
+        'project': 'Student Performance Analyzer',
+        'author': 'FlixBlackout',
+        'repository': 'https://github.com/FlixBlackout/Student-Performance-Analyzer',
+        'platform': 'Railway',
         'port': os.environ.get('PORT', 'not set'),
         'env': os.environ.get('FLASK_ENV', 'not set')
     }, 200

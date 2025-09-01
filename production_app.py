@@ -2,6 +2,10 @@ import os
 from app import create_app
 from app.models.ml_model import initialize_model
 
+# Student Performance Analyzer - Production Application
+# Author: FlixBlackout
+# Repository: https://github.com/FlixBlackout/Student-Performance-Analyzer
+
 # Create the Flask application
 app = create_app()
 
@@ -17,7 +21,14 @@ app.config.update(
 # Add health check endpoint
 @app.route('/health')
 def health_check():
-    return {'status': 'healthy', 'message': 'STA application is running'}, 200
+    return {
+        'status': 'healthy', 
+        'message': 'Student Performance Analyzer is running',
+        'project': 'Student Performance Analyzer',
+        'author': 'FlixBlackout',
+        'repository': 'https://github.com/FlixBlackout/Student-Performance-Analyzer',
+        'version': '1.0.0'
+    }, 200
 
 # Initialize the ML model
 with app.app_context():

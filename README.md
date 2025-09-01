@@ -1,6 +1,9 @@
 # Student Performance Analyzer
 
-A web-based application that uses machine learning to predict student performance based on various factors such as previous grades, attendance, and study hours.
+**Created by: FlixBlackout**  
+**Repository: [Student Performance Analyzer](https://github.com/FlixBlackout/Student-Performance-Analyzer)**
+
+A comprehensive web-based application that uses machine learning to predict student performance based on various factors such as previous grades, attendance, and study hours.
 
 ## Features
 
@@ -93,6 +96,27 @@ STA/
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Author
+
+**FlixBlackout**
+- GitHub: [@FlixBlackout](https://github.com/FlixBlackout)
+- Project: [Student Performance Analyzer](https://github.com/FlixBlackout/Student-Performance-Analyzer)
+
+## Project Information
+
+- **Project Name**: Student Performance Analyzer (STA)
+- **Version**: 1.0.0
+- **Created**: 2025
+- **Technology**: Flask, Python, Machine Learning (scikit-learn)
+- **Purpose**: Academic performance prediction and analysis system
+
+## Acknowledgments
+
+- Built with Flask web framework
+- Machine learning powered by scikit-learn
+- UI designed with Bootstrap
+- Data visualization using Chart.js
 
 ## Deployment
 

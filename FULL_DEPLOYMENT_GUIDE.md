@@ -1,4 +1,7 @@
-# Full STA Project Deployment Guide 🚀
+# Student Performance Analyzer - Full Deployment Guide 🚀
+
+**Author**: FlixBlackout  
+**Repository**: [Student Performance Analyzer](https://github.com/FlixBlackout/Student-Performance-Analyzer)
 
 ## 🎯 Full Working Project with ML Capabilities
 
@@ -6,7 +9,7 @@ This guide will help you deploy the **complete Student Performance Analyzer** wi
 
 ## 🔧 Prerequisites
 
-- Git repository: `https://github.com/FlixBlackout/STA.git`
+- Git repository: `https://github.com/FlixBlackout/Student-Performance-Analyzer.git`
 - All ML dependencies included in `requirements-full.txt`
 - Production-ready configurations created
 
@@ -25,7 +28,7 @@ This guide will help you deploy the **complete Student Performance Analyzer** wi
 1. Go to [railway.app](https://railway.app)
 2. Sign up with GitHub
 3. Click "Deploy from GitHub repo"
-4. Select your `FlixBlackout/STA` repository
+4. Select your `FlixBlackout/Student-Performance-Analyzer` repository
 5. Railway will automatically detect `railway.toml` and deploy
 6. Set environment variables:
    - `SECRET_KEY`: Generate a secure key
