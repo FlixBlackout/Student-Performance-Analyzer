@@ -11,11 +11,17 @@ from production_app import app
 
 def main():
     # Get port from environment or default to 5000
-    port = int(os.environ.get('PORT', 5000))
+    try:
+        port = int(os.environ.get('PORT', 5000))
+    except (ValueError, TypeError):
+        print("⚠️ Warning: Invalid PORT value, using default 5000")
+        port = 5000
+    
     host = os.environ.get('HOST', '0.0.0.0')
     
     print(f"🚀 Starting STA Server on {host}:{port}")
     print(f"🌍 Environment: {os.environ.get('FLASK_ENV', 'development')}")
+    print(f"🔍 Health check: http://{host}:{port}/health")
     
     # Use Werkzeug's built-in server (more reliable than Flask dev server)
     run_simple(

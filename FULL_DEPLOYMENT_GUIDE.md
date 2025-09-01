@@ -142,6 +142,13 @@ After deployment, verify these features work:
    - **Solution 3**: Use alternative Procfile: `Procfile.simple`
    - **Solution 4**: Use Docker deployment with `Dockerfile`
 
+6. **PORT Environment Variable Issues**
+   - **Error**: `'$PORT' is not a valid port number`
+   - **Solution 1**: Use fallback syntax: `${PORT:-5000}`
+   - **Solution 2**: Use platform-specific scripts: `railway-start.sh`, `render-start.sh`
+   - **Solution 3**: Use universal script: `python universal_start.py`
+   - **Solution 4**: Set PORT explicitly in environment variables
+
 ## 🎯 Recommended: Railway Deployment
 
 Railway is the best option because:

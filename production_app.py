@@ -35,5 +35,12 @@ with app.app_context():
         print("The application will work without ML predictions.")
 
 if __name__ == '__main__':
-    # For development
-    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)), debug=False)
+    # Get port from environment with fallback
+    port = int(os.environ.get('PORT', 5000))
+    host = os.environ.get('HOST', '0.0.0.0')
+    
+    print(f"🚀 Starting STA on {host}:{port}")
+    print(f"🌍 Environment: {os.environ.get('FLASK_ENV', 'production')}")
+    
+    # For development and fallback
+    app.run(host=host, port=port, debug=False)
