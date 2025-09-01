@@ -39,7 +39,7 @@ class StudentPerformancePredictor:
         Train the model on student performance data
         
         Parameters:
-        X : DataFrame with features (previous_grade, attendance_percentage, study_hours)
+        X : DataFrame with features (previous_grade, current_grade, attendance_percentage, study_hours)
         y : Series with target (actual_score)
         """
         # Split data
@@ -72,7 +72,7 @@ class StudentPerformancePredictor:
         Predict student performance based on features
         
         Parameters:
-        features : DataFrame with columns [previous_grade, attendance_percentage, study_hours]
+        features : DataFrame with columns [previous_grade, current_grade, attendance_percentage, study_hours]
         
         Returns:
         predicted_score : float
@@ -81,8 +81,21 @@ class StudentPerformancePredictor:
             # If no model is trained, use a simple heuristic
             return self._heuristic_prediction(features)
         
-        # Scale features
-        features_scaled = self.scaler.transform(features)
+        # Check if the model was trained with or without current_grade
+        # If model expects 3 features but we have 4, use only the required ones
+        if hasattr(self.model, 'n_features_in_') and self.model.n_features_in_ == 3 and features.shape[1] == 4:
+            # Extract only previous_grade, attendance, study_hours
+            features_to_use = np.array([[features[0, 0], features[0, 2], features[0, 3]]])
+            # Scale features
+            features_scaled = self.scaler.transform(features_to_use)
+        else:
+            # Scale features as is
+            try:
+                features_scaled = self.scaler.transform(features)
+            except ValueError:
+                # If there's a dimension mismatch, fall back to heuristic
+                print("Dimension mismatch in model prediction. Using heuristic instead.")
+                return self._heuristic_prediction(features)
         
         # Make prediction
         return self.model.predict(features_scaled)[0]
@@ -91,24 +104,48 @@ class StudentPerformancePredictor:
         """Simple heuristic for prediction when no model is available"""
         # Extract features
         previous_grade = features[0, 0]
-        attendance = features[0, 1]
-        study_hours = features[0, 2]
+        current_grade = features[0, 1] if features.shape[1] > 3 else previous_grade  # Use previous grade if current not provided
+        attendance = features[0, 2] if features.shape[1] > 3 else features[0, 1]
+        study_hours = features[0, 3] if features.shape[1] > 3 else features[0, 2]
         
-        # Simple weighted average
-        weights = [0.5, 0.3, 0.2]
-        
-        # Normalize attendance (0-100) to 0-10 scale
-        attendance_normalized = attendance / 10
-        
-        # Normalize study hours (assuming max of 40 hours/week) to 0-10 scale
-        study_hours_normalized = min(study_hours, 40) / 4
-        
-        # Calculate weighted score
-        predicted_score = (
-            weights[0] * previous_grade + 
-            weights[1] * attendance_normalized + 
-            weights[2] * study_hours_normalized
-        )
+        # Base prediction on mean of input values with emphasis on current grade
+        # For good current grades (>= 80), ensure prediction tends toward 80+
+        if current_grade >= 80:
+            # For high current grades, prediction should be at least 80
+            # and influenced by other factors
+            base_score = 80
+            # Other factors can push it higher but with diminishing returns
+            additional_score = min(15, (current_grade - 80) * 0.5)
+            
+            # Attendance and study hours can add up to 5 points
+            attendance_bonus = min(3, (attendance - 80) * 0.15) if attendance > 80 else 0
+            study_bonus = min(2, study_hours * 0.1)
+            
+            predicted_score = base_score + additional_score + attendance_bonus + study_bonus
+        else:
+            # For lower current grades, use weighted mean with current grade having highest weight
+            weights = [0.2, 0.5, 0.2, 0.1] if features.shape[1] > 3 else [0.6, 0.3, 0.1]
+            
+            # Normalize attendance (0-100) to 0-100 scale
+            attendance_normalized = attendance
+            
+            # Normalize study hours (assuming max of 40 hours/week) to 0-100 scale
+            study_hours_normalized = min(study_hours * 2.5, 100)
+            
+            # Calculate weighted score
+            if features.shape[1] > 3:
+                predicted_score = (
+                    weights[0] * previous_grade + 
+                    weights[1] * current_grade +
+                    weights[2] * attendance_normalized + 
+                    weights[3] * study_hours_normalized
+                )
+            else:
+                predicted_score = (
+                    weights[0] * previous_grade + 
+                    weights[1] * attendance_normalized + 
+                    weights[2] * study_hours_normalized
+                )
         
         # Ensure the score is within reasonable bounds (0-100)
         return max(0, min(100, predicted_score))
@@ -118,18 +155,42 @@ class StudentPerformancePredictor:
 def generate_synthetic_data(n_samples=100):
     np.random.seed(42)
     
-    # Generate random features
-    previous_grades = np.random.uniform(40, 100, n_samples)
-    attendance = np.random.uniform(50, 100, n_samples)
-    study_hours = np.random.uniform(1, 40, n_samples)
+    # Generate random features with more realistic distributions
+    # Previous grades with normal distribution around 75
+    previous_grades = np.clip(np.random.normal(75, 10, n_samples), 40, 100)
     
-    # Create a synthetic relationship
-    actual_scores = (
-        0.6 * previous_grades + 
-        0.25 * attendance / 10 + 
-        0.15 * study_hours + 
-        np.random.normal(0, 5, n_samples)
-    )
+    # Current grades with normal distribution around 78
+    current_grades = np.clip(np.random.normal(78, 12, n_samples), 40, 100)
+    
+    # Attendance with skewed distribution toward higher values (most students attend)
+    attendance = np.clip(np.random.beta(7, 2, n_samples) * 100, 50, 100)
+    
+    # Study hours with normal distribution around 15 hours/week
+    study_hours = np.clip(np.random.normal(15, 8, n_samples), 1, 40)
+    
+    # Create a synthetic relationship that centers around 80 for good students
+    actual_scores = np.zeros(n_samples)
+    
+    for i in range(n_samples):
+        if current_grades[i] >= 80:
+            # For high current grades, base score is 80 with bonuses
+            base_score = 80
+            additional_score = min(15, (current_grades[i] - 80) * 0.5)
+            attendance_bonus = min(3, (attendance[i] - 80) * 0.15) if attendance[i] > 80 else 0
+            study_bonus = min(2, study_hours[i] * 0.1)
+            
+            score = base_score + additional_score + attendance_bonus + study_bonus
+        else:
+            # For lower current grades, weighted average
+            score = (
+                0.2 * previous_grades[i] +
+                0.5 * current_grades[i] +
+                0.2 * attendance[i] +
+                0.1 * min(study_hours[i] * 2.5, 100)
+            )
+        
+        # Add some random noise
+        actual_scores[i] = score + np.random.normal(0, 3)
     
     # Ensure scores are within reasonable bounds
     actual_scores = np.clip(actual_scores, 0, 100)
@@ -137,6 +198,7 @@ def generate_synthetic_data(n_samples=100):
     # Create DataFrame
     data = pd.DataFrame({
         'previous_grade': previous_grades,
+        'current_grade': current_grades,
         'attendance_percentage': attendance,
         'study_hours': study_hours,
         'actual_score': actual_scores
@@ -152,7 +214,7 @@ def initialize_model():
     # If model doesn't exist, train with synthetic data
     if predictor.model is None:
         data = generate_synthetic_data(200)
-        X = data[['previous_grade', 'attendance_percentage', 'study_hours']]
+        X = data[['previous_grade', 'current_grade', 'attendance_percentage', 'study_hours']]
         y = data['actual_score']
         
         metrics = predictor.train(X, y)

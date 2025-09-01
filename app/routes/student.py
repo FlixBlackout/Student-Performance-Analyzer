@@ -243,12 +243,17 @@ def add_performance():
     if request.method == 'POST':
         subject_id = request.form.get('subject_id')
         previous_grade = float(request.form.get('previous_grade'))
+        current_grade = float(request.form.get('current_grade'))
         attendance = float(request.form.get('attendance'))
         study_hours = float(request.form.get('study_hours'))
         
         # Validate input
         if previous_grade < 0 or previous_grade > 100:
             flash('Previous grade must be between 0 and 100.')
+            return redirect(url_for('student.add_performance'))
+        
+        if current_grade < 0 or current_grade > 100:
+            flash('Current grade must be between 0 and 100.')
             return redirect(url_for('student.add_performance'))
         
         if attendance < 0 or attendance > 100:
@@ -267,12 +272,13 @@ def add_performance():
         
         # Predict performance using ML model
         predictor = StudentPerformancePredictor()
-        features = np.array([[previous_grade, attendance, study_hours]])
+        features = np.array([[previous_grade, current_grade, attendance, study_hours]])
         predicted_score = predictor.predict(features)
         
         if existing_performance:
             # Update existing performance data
             existing_performance.previous_grade = previous_grade
+            existing_performance.current_grade = current_grade
             existing_performance.attendance_percentage = attendance
             existing_performance.study_hours = study_hours
             existing_performance.predicted_score = predicted_score
@@ -282,6 +288,7 @@ def add_performance():
                 student_id=profile.id,
                 subject_id=subject_id,
                 previous_grade=previous_grade,
+                current_grade=current_grade,
                 attendance_percentage=attendance,
                 study_hours=study_hours,
                 predicted_score=predicted_score

@@ -24,6 +24,7 @@
                                     <tr>
                                         <th>Subject</th>
                                         <th>Previous Grade</th>
+                                        <th>Current Grade</th>
                                         <th>Attendance</th>
                                         <th>Study Hours</th>
                                         <th>Predicted Score</th>
@@ -34,6 +35,13 @@
                                         <tr>
                                             <td>{{ performance.subject.name }}</td>
                                             <td>{{ performance.previous_grade }}</td>
+                                            <td>
+                                                {% if performance.current_grade %}
+                                                    {{ performance.current_grade }}
+                                                {% else %}
+                                                    <span class="text-muted">Not set</span>
+                                                {% endif %}
+                                            </td>
                                             <td>{{ performance.attendance_percentage }}%</td>
                                             <td>{{ performance.study_hours }} hrs/week</td>
                                             <td>

@@ -95,6 +95,7 @@ class StudentPerformance(db.Model):
     student_id = db.Column(db.Integer, db.ForeignKey('student_profile.id'), nullable=False)
     subject_id = db.Column(db.Integer, db.ForeignKey('subject.id'), nullable=False)
     previous_grade = db.Column(db.Float, nullable=False)  # Previous grade in the subject
+    current_grade = db.Column(db.Float, nullable=True)    # Current grade in the subject
     attendance_percentage = db.Column(db.Float, nullable=False)  # Attendance percentage
     study_hours = db.Column(db.Float, nullable=False)  # Weekly study hours
     predicted_score = db.Column(db.Float, nullable=True)  # ML predicted score

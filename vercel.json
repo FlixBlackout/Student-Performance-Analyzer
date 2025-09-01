@@ -6,7 +6,7 @@
       "use": "@vercel/python",
       "config": {
         "runtime": "python3.9",
-        "pythonRequirements": "requirements-minimal.txt",
+        "pythonRequirements": "requirements-vercel.txt",
         "maxLambdaSize": "15mb"
       }
     }
@@ -19,6 +19,6 @@
   ],
   "env": {
     "FLASK_ENV": "production",
-    "FLASK_APP": "vercel_app.py"
+    "SECRET_KEY": "sta-secure-secret-key-2025"
   }
 }
