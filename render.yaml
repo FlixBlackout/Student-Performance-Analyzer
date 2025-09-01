@@ -4,8 +4,8 @@ services:
     name: sta-app
     env: python
     plan: free
-    buildCommand: "pip install -r requirements-full.txt"
-    startCommand: "gunicorn --bind 0.0.0.0:$PORT run:app"
+    buildCommand: "pip install --upgrade pip && pip install -r requirements-full.txt"
+    startCommand: "python -m gunicorn --bind 0.0.0.0:$PORT production_app:app"
     envVars:
       - key: FLASK_ENV
         value: production

@@ -135,6 +135,13 @@ After deployment, verify these features work:
    - Use pre-built wheels when available
    - Increase build timeout limits
 
+5. **Gunicorn Command Not Found**
+   - **Error**: `/bin/bash: line 1: gunicorn: command not found`
+   - **Solution 1**: Use Python module syntax: `python -m gunicorn`
+   - **Solution 2**: Use simple server: `python simple_server.py`
+   - **Solution 3**: Use alternative Procfile: `Procfile.simple`
+   - **Solution 4**: Use Docker deployment with `Dockerfile`
+
 ## 🎯 Recommended: Railway Deployment
 
 Railway is the best option because:

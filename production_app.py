@@ -14,6 +14,11 @@ app.config.update(
     FLASK_ENV='production'
 )
 
+# Add health check endpoint
+@app.route('/health')
+def health_check():
+    return {'status': 'healthy', 'message': 'STA application is running'}, 200
+
 # Initialize the ML model
 with app.app_context():
     try:
