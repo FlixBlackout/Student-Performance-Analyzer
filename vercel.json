@@ -6,7 +6,7 @@
       "use": "@vercel/python",
       "config": {
         "runtime": "python3.9",
-        "pythonRequirements": "requirements-deploy.txt",
+        "pythonRequirements": "requirements.txt",
         "maxLambdaSize": "10mb"
       }
     }
