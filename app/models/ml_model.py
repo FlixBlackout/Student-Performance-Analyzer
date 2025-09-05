@@ -1,5 +1,9 @@
-import numpy as np
-import pandas as pd
+import warnings
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=UserWarning)
+    warnings.filterwarnings("ignore", category=FutureWarning)
+    import numpy as np
+    import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
@@ -11,6 +15,7 @@ class StudentPerformancePredictor:
     def __init__(self):
         self.model = None
         self.scaler = StandardScaler()
+        self.is_scaler_fitted = False
         self.model_path = os.path.join(os.path.dirname(__file__), 'performance_model.pkl')
         self.scaler_path = os.path.join(os.path.dirname(__file__), 'performance_scaler.pkl')
         
@@ -25,8 +30,10 @@ class StudentPerformancePredictor:
                 import warnings
                 with warnings.catch_warnings():
                     warnings.filterwarnings("ignore", category=UserWarning)
+                    warnings.filterwarnings("ignore", category=FutureWarning)
                     self.model = joblib.load(self.model_path)
                     self.scaler = joblib.load(self.scaler_path)
+                    self.is_scaler_fitted = True
                     
                 # Check if model loaded successfully
                 if self.model is not None:
@@ -60,6 +67,7 @@ class StudentPerformancePredictor:
         # Scale features
         X_train_scaled = self.scaler.fit_transform(X_train)
         X_test_scaled = self.scaler.transform(X_test)
+        self.is_scaler_fitted = True
         
         # Train model
         self.model = RandomForestRegressor(n_estimators=100, random_state=42)
@@ -89,28 +97,29 @@ class StudentPerformancePredictor:
         Returns:
         predicted_score : float
         """
-        if self.model is None:
-            # If no model is trained, use a simple heuristic
+        if self.model is None or not self.is_scaler_fitted:
+            # If no model is trained or scaler not fitted, use a simple heuristic
             return self._heuristic_prediction(features)
         
-        # Check if the model was trained with or without current_grade
-        # If model expects 3 features but we have 4, use only the required ones
-        if hasattr(self.model, 'n_features_in_') and self.model.n_features_in_ == 3 and features.shape[1] == 4:
-            # Extract only previous_grade, attendance, study_hours
-            features_to_use = np.array([[features[0, 0], features[0, 2], features[0, 3]]])
-            # Scale features
-            features_scaled = self.scaler.transform(features_to_use)
-        else:
-            # Scale features as is
-            try:
+        try:
+            # Check if the model was trained with or without current_grade
+            # If model expects 3 features but we have 4, use only the required ones
+            if hasattr(self.model, 'n_features_in_') and self.model.n_features_in_ == 3 and features.shape[1] == 4:
+                # Extract only previous_grade, attendance, study_hours
+                features_to_use = np.array([[features[0, 0], features[0, 2], features[0, 3]]])
+                # Scale features
+                features_scaled = self.scaler.transform(features_to_use)
+            else:
+                # Scale features as is
                 features_scaled = self.scaler.transform(features)
-            except ValueError:
-                # If there's a dimension mismatch, fall back to heuristic
-                print("Dimension mismatch in model prediction. Using heuristic instead.")
-                return self._heuristic_prediction(features)
-        
-        # Make prediction
-        return self.model.predict(features_scaled)[0]
+            
+            # Make prediction
+            return self.model.predict(features_scaled)[0]
+            
+        except Exception as e:
+            # If there's any error with model prediction, fall back to heuristic
+            print(f"Error in model prediction: {e}. Using heuristic instead.")
+            return self._heuristic_prediction(features)
     
     def _heuristic_prediction(self, features):
         """Simple heuristic for prediction when no model is available"""
@@ -223,13 +232,14 @@ def generate_synthetic_data(n_samples=100):
 def initialize_model():
     predictor = StudentPerformancePredictor()
     
-    # If model doesn't exist, train with synthetic data
-    if predictor.model is None:
+    # If model doesn't exist or scaler not fitted, train with synthetic data
+    if predictor.model is None or not predictor.is_scaler_fitted:
+        print("🔧 Initializing ML model with synthetic data...")
         data = generate_synthetic_data(200)
         X = data[['previous_grade', 'current_grade', 'attendance_percentage', 'study_hours']]
         y = data['actual_score']
         
         metrics = predictor.train(X, y)
-        print(f"Initialized model with synthetic data. Metrics: {metrics}")
+        print(f"✅ Initialized model with synthetic data. Metrics: {metrics}")
     
     return predictor

@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 from app import db
 from app.models.user import StudentProfile, Subject, StudentSubject, StudentPerformance
-from app.models.ml_model import StudentPerformancePredictor
+from app.models.ml_model import initialize_model
 
 student = Blueprint('student', __name__)
 
@@ -271,7 +271,7 @@ def add_performance():
         ).first()
         
         # Predict performance using ML model
-        predictor = StudentPerformancePredictor()
+        predictor = initialize_model()
         features = np.array([[previous_grade, current_grade, attendance, study_hours]])
         predicted_score = predictor.predict(features)
         
