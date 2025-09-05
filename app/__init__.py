@@ -33,6 +33,18 @@ def create_app():
     def load_user(user_id):
         return User.query.get(int(user_id))
     
+    # Custom template filters
+    @app.template_filter('average')
+    def average_filter(values):
+        """Calculate average of a list of values"""
+        try:
+            values_list = list(values)
+            if not values_list:
+                return 0
+            return sum(values_list) / len(values_list)
+        except (TypeError, ZeroDivisionError):
+            return 0
+    
     # Register blueprints
     from app.routes.auth import auth as auth_blueprint
     app.register_blueprint(auth_blueprint)
